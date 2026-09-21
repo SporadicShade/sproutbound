@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#1b3a2a" />
+  <title>Sproutbound</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-block">
+        <div class="title">Sproutbound</div>
+        <div id="status" class="status">Pip the Sproutling</div>
+      </div>
+      <div class="meters">
+        <div class="meter">
+          <span>HP</span>
+          <div class="bar"><i id="hp-bar"></i></div>
+          <b id="hp-text">10/10</b>
+        </div>
+        <div class="meter">
+          <span>XP</span>
+          <div class="bar xp"><i id="xp-bar"></i></div>
+          <b id="xp-text">Lv 1</b>
+        </div>
+      </div>
+      <div class="pockets">
+        <span>Seeds <b id="coin-text">0</b></span>
+        <span>Loot <b id="loot-text">0</b></span>
+      </div>
+    </header>
+
+    <main id="stage">
+      <canvas id="game"></canvas>
+      <div id="toast"></div>
+      <div id="pause-menu" class="hidden">
+        <h2>Paused</h2>
+        <p>Sproutbound is a cozy open meadow for kids. Explore, tap attack, pick up sparkles.</p>
+        <button id="btn-resume">Resume</button>
+        <button id="btn-reset">New Adventure</button>
+      </div>
+    </main>
+
+    <footer id="controls">
+      <div id="stick" class="stick">
+        <div id="knob" class="knob"></div>
+      </div>
+      <div class="buttons">
+        <button id="btn-pause" class="ghost">II</button>
+        <button id="btn-attack" class="attack">A</button>
+      </div>
+    </footer>
+  </div>
+  <script src="js/data.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
