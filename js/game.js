@@ -67,19 +67,23 @@
   }
 
   function rates() {
-    const shift = onShiftHours();
-    const working = state.people.filter((p) => usable(p) && shift && p.job !== "unassigned" && p.doing === "on shift");
-    const garden = Math.min(working.filter((p) => p.job === "garden").length, state.buildings.garden || 0);
-    const scrap = Math.min(working.filter((p) => p.job === "scrap").length, 4);
-    const watch = Math.min(working.filter((p) => p.job === "watch").length, state.buildings.watch || 0);
+    const present = state.people.filter((p) => usable(p));
+    const shift = onShiftHours() ? 1 : 0.5;
+    const gardeners = present.filter((p) => p.job === "garden").length;
+    const scrappers = present.filter((p) => p.job === "scrap").length;
+    const beds = state.buildings.garden || 0;
+    const foodMake = Math.round((gardeners * 4 + beds) * shift);
+    const scrapMake = Math.round(scrappers * 2 * shift);
     const eaters = state.people.filter((p) => p.cond !== "missing");
-    const foodEat = eaters.reduce((n, p) => n + (p.trait === "hungry" ? 2 : 1), 0);
+    const foodUse = eaters.reduce((n, p) => n + (p.trait === "hungry" ? 2 : 1), 0);
+    const medUse = present.some((p) => p.job === "clinic") && state.buildings.clinic && state.people.some((p) => p.cond === "injured") ? 1 : 0;
+    const ammoUse = nightHours() ? present.filter((p) => p.job === "watch").length : 0;
     return {
-      food: garden * 2 - foodEat,
-      scrap: scrap * 2,
-      meds: working.some((p) => p.job === "clinic") && state.buildings.clinic ? -1 : 0,
-      ammo: watch && nightHours() ? -watch : 0,
-      power: -1 + Math.min(scrap, 2)
+      food: { make: foodMake, use: foodUse },
+      scrap: { make: scrapMake, use: 0 },
+      meds: { make: 0, use: medUse },
+      ammo: { make: 0, use: ammoUse },
+      power: { make: Math.min(scrappers, 2), use: 1 }
     };
   }
 
@@ -100,10 +104,10 @@
       place(p);
     });
     const r = rates();
-    state.stocks.food = Math.max(0, state.stocks.food + r.food);
-    state.stocks.scrap = Math.max(0, state.stocks.scrap + Math.max(0, r.scrap));
-    state.stocks.power = Math.max(0, state.stocks.power + r.power);
-    if (r.ammo < 0) state.stocks.ammo = Math.max(0, state.stocks.ammo + r.ammo);
+    state.stocks.food = Math.max(0, state.stocks.food + r.food.make - r.food.use);
+    state.stocks.scrap += r.scrap.make;
+    state.stocks.power = Math.max(0, state.stocks.power + r.power.make - r.power.use);
+    if (r.ammo.use) state.stocks.ammo = Math.max(0, state.stocks.ammo - r.ammo.use);
     state.people.forEach((p) => {
       if (p.cond === "missing") return;
       if (state.stocks.food === 0) p.hunger += 1;
@@ -199,10 +203,23 @@
     save();
   }
 
-  function rateText(n) {
-    if (n > 0) return `+${n}/h`;
-    if (n < 0) return `${n}/h`;
-    return "0/h";
+  function placeName(p) {
+    if (p.cond === "missing") return "Past the gate";
+    if (p.cond === "injured" || p.doing === "lying up") return "Clinic";
+    if (p.job === "garden" && (p.doing === "on shift" || onShiftHours())) return "Garden";
+    if (p.job === "scrap" && (p.doing === "on shift" || onShiftHours())) return "Scrap pile";
+    if (p.job === "watch" && (p.doing === "on shift" || onShiftHours())) return "Gate";
+    if (p.job === "clinic" && (p.doing === "on shift" || onShiftHours())) return "Clinic";
+    if (state.districts.length > 1 && (p.doing === "scavenging" || p.doing === "picking up odd jobs")) {
+      return state.districts[1 + (p.name.length % (state.districts.length - 1))].name;
+    }
+    return "Ashward Yard";
+  }
+
+  function rateText(part) {
+    const net = part.make - part.use;
+    const cls = net > 0 ? "up" : net < 0 ? "down" : "";
+    return `<span class="rate ${cls}">+${part.make} / -${part.use}</span>`;
   }
 
   function render() {
@@ -214,26 +231,19 @@
     Object.entries(state.stocks).forEach(([k, v]) => {
       const d = document.createElement("div");
       d.className = "card";
-      const n = r[k] || 0;
-      d.innerHTML = `<b>${k}</b><div>${v} <span class="rate ${n > 0 ? "up" : n < 0 ? "down" : ""}">${rateText(n)}</span></div>`;
+      const n = r[k] || { make: 0, use: 0 };
+      d.innerHTML = `<b>${k}</b><div>${v} ${rateText(n)}</div>`;
       stocksEl.appendChild(d);
     });
     cityEl.replaceChildren();
-    state.districts.forEach((d0) => {
-      const plot = document.createElement("div");
-      plot.className = "plot";
-      plot.style.left = `${Math.max(4, Math.min(78, d0.x))}%`;
-      plot.style.top = `${Math.max(6, Math.min(78, d0.y))}%`;
-      plot.textContent = d0.name;
-      cityEl.appendChild(plot);
-    });
-    state.people.forEach((p) => {
-      const dot = document.createElement("div");
-      dot.className = "dot";
-      dot.style.left = `${p.x}%`;
-      dot.style.top = `${p.y}%`;
-      dot.innerHTML = `<span>${p.name.split(" ")[0]}</span>`;
-      cityEl.appendChild(dot);
+    const spots = ["Ashward Yard", "Garden", "Scrap pile", "Gate", "Clinic"]
+      .concat(state.districts.map((d) => d.name).filter((name) => name !== "Ashward Yard"));
+    spots.forEach((name) => {
+      const cell = document.createElement("div");
+      cell.className = "plot";
+      const here = state.people.filter((p) => placeName(p) === name);
+      cell.innerHTML = `<b>${name}</b><div>${here.length ? here.map((p) => p.name).join(", ") : "empty"}</div>`;
+      cityEl.appendChild(cell);
     });
     peopleEl.replaceChildren();
     state.people.forEach((p, i) => {

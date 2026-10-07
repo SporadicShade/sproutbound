@@ -35,36 +35,25 @@ select, button {
 }
 select { background: #221c17; color: var(--ink); border: 1px solid var(--line); padding: 6px; }
 #city-map {
-  position: relative;
-  height: 240px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  min-height: 180px;
+  height: auto;
+  padding: 8px;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: #1a1714;
-  overflow: hidden;
 }
 .plot {
-  position: absolute;
-  min-width: 72px;
-  padding: 4px 6px;
+  position: static;
+  min-height: 72px;
+  padding: 8px;
   border-radius: 8px;
   background: #2a241c;
-  font-size: 12px;
+  font-size: 14px;
 }
-.dot {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--accent);
-  transform: translate(-50%, -50%);
-}
-.dot span {
-  position: absolute;
-  left: 12px;
-  top: -6px;
-  white-space: nowrap;
-  font-size: 11px;
-}
+.plot b { color: var(--accent); }
 #log { list-style: none; padding: 0; margin: 8px 0 0; }
 #log li { padding: 7px 0; border-bottom: 1px solid var(--line); }
 #actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }

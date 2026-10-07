@@ -2,6 +2,13 @@
 
 All notable changes to this repo. Keep newest first.
 
+## [0.5.1] — 2026-10-07
+
+### Fixed
+- Food and scrap rates follow the job you assign. Two gardeners produce food even with one bed. A scrapper no longer shows 0.
+- Each stock shows production and use separately, as +n / -n.
+- The city map is a grid of places. People are named inside the yard, garden, scrap pile, gate, or clinic. Old saves with no coordinates still draw.
+
 ## [0.5.0] — 2026-10-07
 
 ### Added
