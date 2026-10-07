@@ -16,6 +16,7 @@
     paused: false,
     keys: new Set(),
     stick: { x: 0, y: 0 },
+    pad: { x: 0, y: 0 },
     attackCooldown: 0,
     toastTimer: 0,
     time: 0,
@@ -343,7 +344,7 @@
 
     const p = state.player;
     p.invuln = Math.max(0, p.invuln - dt);
-    let mx = state.stick.x, my = state.stick.y;
+    let mx = state.stick.x + state.pad.x, my = state.stick.y + state.pad.y;
     if (state.keys.has("arrowleft") || state.keys.has("a")) mx -= 1;
     if (state.keys.has("arrowright") || state.keys.has("d")) mx += 1;
     if (state.keys.has("arrowup") || state.keys.has("w")) my -= 1;
@@ -566,6 +567,38 @@
     setPaused(false);
   }
 
+  function bindPad() {
+    const dirs = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+    const held = new Set();
+    const apply = () => {
+      let x = 0, y = 0;
+      for (const d of held) { x += dirs[d][0]; y += dirs[d][1]; }
+      state.pad.x = x;
+      state.pad.y = y;
+    };
+    document.querySelectorAll(".dir").forEach((btn) => {
+      const dir = btn.dataset.dir;
+      const down = (e) => {
+        if (e.cancelable) e.preventDefault();
+        held.add(dir);
+        btn.classList.add("held");
+        apply();
+      };
+      const up = () => {
+        held.delete(dir);
+        btn.classList.remove("held");
+        apply();
+      };
+      btn.addEventListener("pointerdown", down);
+      btn.addEventListener("pointerup", up);
+      btn.addEventListener("pointercancel", up);
+      btn.addEventListener("pointerleave", up);
+      btn.addEventListener("touchstart", down, { passive: false });
+      btn.addEventListener("touchend", up);
+      btn.addEventListener("touchcancel", up);
+    });
+  }
+
   function bindStick() {
     let activeId = null;
     const setFromEvent = (clientX, clientY) => {
@@ -641,6 +674,7 @@
   spawnEnemies(77);
   load();
   bindStick();
-  toast("Hold the green stick, then drag. Tap A to swat.");
+  bindPad();
+  toast("Hold an arrow to walk. Tap A to swat.");
   requestAnimationFrame(loop);
 })();

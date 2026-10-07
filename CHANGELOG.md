@@ -2,6 +2,12 @@
 
 All notable changes to Sproutbound. Keep newest first. Automations must append here in the same format whenever they push code.
 
+## [0.2.2] — 2026-10-07
+
+### Fixed
+- Phone movement no longer depends on a drag. Four arrow buttons walk Pip while a thumb holds them, using the same press as the A button.
+- The green stick is still there for a drag, but the arrows are the reliable control.
+
 ## [0.2.1] — 2026-10-07
 
 ### Fixed
@@ -23,7 +29,7 @@ All notable changes to Sproutbound. Keep newest first. Automations must append h
 ## [0.1.0] — 2026-09-21
 
 ### Added
-- Seeded 56×56 top-down meadow with grass, flowers, trees, water, path, rocks, bushes, sand, and two shrines.
+- Seeded 56x56 top-down meadow with grass, flowers, trees, water, path, rocks, bushes, sand, and two shrines.
 - Pip the Sproutling with keyboard + on-screen joystick movement.
 - Melee swipe combat (A button / Space / J) with cooldown flash.
 - Three dynamic enemies: Pebblebug, Puffmoth, Shadowseed (wander + aggro).

@@ -132,3 +132,23 @@ html, body {
   #controls { padding-inline: 48px; }
   #pause-menu { inset: 10% 18%; }
 }
+
+.pad {
+  display: grid;
+  grid-template-columns: 54px 54px 54px;
+  grid-template-areas: ". up ." "left . right" ". down .";
+  gap: 6px;
+  touch-action: none;
+}
+.dir {
+  width: 54px; height: 54px; border-radius: 14px;
+  background: var(--leaf); color: var(--ink); font-size: 26px;
+  touch-action: none;
+}
+.dir[data-dir="up"] { grid-area: up; }
+.dir[data-dir="left"] { grid-area: left; }
+.dir[data-dir="down"] { grid-area: down; }
+.dir[data-dir="right"] { grid-area: right; }
+.dir.held { background: var(--sun); }
+.stick { width: 92px; height: 92px; }
+.knob { width: 40px; height: 40px; left: 26px; top: 26px; }

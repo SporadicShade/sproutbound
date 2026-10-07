@@ -1,6 +1,6 @@
 /* Sproutbound data catalog — keep tables here so gameplay code stays lean. */
 window.SPROUT = {
-  version: "0.2.1",
+  version: "0.2.2",
   worldSize: 56,
   tile: 32,
   tiles: {
