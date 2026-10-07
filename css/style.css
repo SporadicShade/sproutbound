@@ -1,154 +1,41 @@
 :root {
-  --soil: #1b3a2a;
-  --leaf: #7dce6a;
-  --sun: #ffd56a;
-  --ink: #14301f;
-  --paper: #f4ffe8;
-  --rose: #ff8a7a;
+  --bg: #14110e;
+  --ink: #f3ead7;
+  --dim: #b7aa96;
+  --line: #3a3228;
+  --accent: #e0a15a;
 }
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; }
 html, body {
   margin: 0;
-  height: 100%;
-  background: var(--soil);
-  color: var(--paper);
-  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-  overflow: hidden;
-  touch-action: none;
-  user-select: none;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.45 "Iowan Old Style", "Palatino Linotype", Palatino, serif;
 }
-#app {
-  height: 100%;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-}
-#hud {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px calc(8px + env(safe-area-inset-top));
-  background: linear-gradient(#234833, #1b3a2a);
-}
-.title { font-weight: 800; letter-spacing: 0.4px; }
-.status { font-size: 12px; opacity: 0.85; }
-.meters { flex: 1; max-width: 280px; }
-.meter { display: grid; grid-template-columns: 24px 1fr auto; gap: 6px; align-items: center; font-size: 12px; margin: 3px 0; }
-.bar { height: 10px; background: #0f2418; border-radius: 99px; overflow: hidden; border: 1px solid #0a1810; }
-.bar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #6adf7a, #c8ff8a); }
-.bar.xp i { background: linear-gradient(90deg, #6ab0ff, #d6f3ff); }
-.pockets { font-size: 13px; display: grid; gap: 4px; text-align: right; }
-#stage { position: relative; background: #163224; }
-#game { width: 100%; height: 100%; display: block; image-rendering: pixelated; touch-action: none; }
-#toast {
-  position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
-  background: rgba(20, 48, 31, 0.92); color: var(--sun);
-  padding: 8px 12px; border-radius: 12px; font-size: 14px;
-  opacity: 0; pointer-events: none; transition: opacity 0.2s;
-  z-index: 3; max-width: 90%; text-align: center;
-}
-#toast.show { opacity: 1; }
-#pause-menu {
-  position: absolute; inset: 8px 8px 8px 8px;
-  background: rgba(15, 36, 24, 0.94);
-  border: 3px solid #7dce6a;
-  border-radius: 18px;
-  padding: 12px 14px 8px;
-  text-align: center;
-  overflow: auto;
-  z-index: 2;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
-}
-#pause-menu.hidden { display: none; }
-#pause-menu h2 { margin: 0 0 4px; font-size: 22px; }
-#pause-menu p { margin: 0 0 8px; font-size: 13px; }
-.panel {
-  text-align: left;
-  background: rgba(8, 20, 14, 0.45);
-  border-radius: 12px;
+body { padding: 16px 16px 120px; max-width: 40rem; margin: 0 auto; }
+h1 { font-size: 1.6rem; margin: 0 0 4px; }
+.sub { color: var(--dim); margin: 0 0 12px; }
+.stocks, .people, .map { display: grid; gap: 6px; margin: 12px 0; }
+.stocks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.card, .person, .district {
+  border: 1px solid var(--line);
+  border-radius: 10px;
   padding: 8px 10px;
-  margin: 8px 0;
 }
-.panel h3 { margin: 0 0 6px; font-size: 15px; color: var(--sun); }
-.note { opacity: 0.9; }
-#bag-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-#bag-list li {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 14px;
+.card b, .person b { color: var(--accent); }
+#log { list-style: none; padding: 0; margin: 8px 0 0; }
+#log li { padding: 6px 0; border-bottom: 1px solid var(--line); }
+#actions {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: #1c1814;
+  border-top: 1px solid var(--line);
 }
-.swatch { width: 12px; height: 12px; border-radius: 50%; flex: none; }
-.bag-use, #pause-menu button, #controls button {
-  font: inherit; font-weight: 800;
-  border: 0; border-radius: 14px;
-  padding: 10px 16px; margin: 6px;
+button {
+  font: inherit; font-weight: 700;
+  background: var(--accent); color: #1b140c;
+  border: 0; border-radius: 12px;
+  min-height: 48px; padding: 8px 12px;
 }
-.bag-use {
-  margin-left: auto;
-  background: var(--rose);
-  color: #3b1010;
-  min-height: 40px;
-}
-#btn-buy-petal, #btn-buy-swipe {
-  display: block; width: calc(100% - 12px);
-  background: var(--sun); color: var(--ink);
-  min-height: 46px;
-}
-#btn-buy-petal:disabled, #btn-buy-swipe:disabled { opacity: 0.55; }
-#btn-resume { background: var(--leaf); color: var(--ink); min-height: 46px; }
-#btn-reset { background: #355846; color: var(--paper); min-height: 44px; }
-#controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 18px calc(14px + env(safe-area-inset-bottom));
-  background: #14281d;
-  touch-action: none;
-}
-.stick {
-  width: 118px; height: 118px; border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-  border: 3px solid rgba(255,255,255,0.16);
-  position: relative;
-  touch-action: none;
-}
-.knob {
-  width: 52px; height: 52px; border-radius: 50%;
-  background: var(--leaf);
-  position: absolute; left: 33px; top: 33px;
-  pointer-events: none;
-}
-.buttons { display: flex; align-items: center; gap: 10px; touch-action: none; }
-.attack {
-  width: 84px; height: 84px; border-radius: 50%;
-  background: var(--rose); color: #3b1010; font-size: 28px;
-  touch-action: none;
-}
-.ghost {
-  width: 44px; height: 44px; border-radius: 12px;
-  background: #2a4a38; color: var(--paper);
-}
-@media (min-width: 900px) {
-  #controls { padding-inline: 48px; }
-  #pause-menu { inset: 10% 18%; }
-}
-
-.pad {
-  display: grid;
-  grid-template-columns: 54px 54px 54px;
-  grid-template-areas: ". up ." "left . right" ". down .";
-  gap: 6px;
-  touch-action: none;
-}
-.dir {
-  width: 54px; height: 54px; border-radius: 14px;
-  background: var(--leaf); color: var(--ink); font-size: 26px;
-  touch-action: none;
-}
-.dir[data-dir="up"] { grid-area: up; }
-.dir[data-dir="left"] { grid-area: left; }
-.dir[data-dir="down"] { grid-area: down; }
-.dir[data-dir="right"] { grid-area: right; }
-.dir.held { background: var(--sun); }
-.stick { width: 92px; height: 92px; }
-.knob { width: 40px; height: 40px; left: 26px; top: 26px; }
+h2 { font-size: 1rem; margin: 18px 0 6px; }

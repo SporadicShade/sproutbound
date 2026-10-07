@@ -1,39 +1,24 @@
-# Sproutbound
+# Ashward
 
-Kid-friendly retro **top-down** open-world RPG for phones and the browser.
+Text colony sim in a dead city. The sprout meadow prototype is retired.
 
-You play as **Pip the Sproutling**. Wander a seeded meadow, swat mischievous (not scary) critters, pick up sparkling loot, and grow stronger. Built as a no-build HTML5 game so it can run on a phone immediately and be upgraded incrementally by Grok Build / Grok Automations.
+You keep a yard, a few colonists, and a gate. The city has no edge. Closing the page does not stop the clock. The next open catches the yard up.
 
-Play locally: open `index.html` in a browser (or serve the folder).
+Play: open `index.html`, or the repo preview once it is served.
 
 Repo: https://github.com/SporadicShade/sproutbound
 
-## Why this stack
+## Current build (v0.3.0)
 
-- Works on mobile without an app store build.
-- Zero toolchain: Grok can edit files and you can refresh the page.
-- Easy changelog + roadmap loop.
-- Later ports (Godot / Unity / Capacitor wrapper) can reuse the design docs.
+- Food, scrap, meds, ammo, power
+- Four colonists
+- Gate, garden, hourly tick
+- Offline catch-up from a saved timestamp
+- Scout adds another named district forever
 
-## Current build (v0.1.0)
+## Docs
 
-- Seeded 56×56 open meadow with paths, water, trees, two shrines
-- Touch joystick + attack button, keyboard WASD / arrows + Space or J
-- Three enemy types with wander + aggro
-- Dynamic loot drops, XP, levels, local save
-- Minimap, HUD, pause / new adventure
-
-## Project files Grok should always read first
-
-1. `DESIGN.md` — tone, audience, constraints
-2. `ROADMAP.md` — next increment only
-3. `CHANGELOG.md` — what already shipped
-4. `AGENTS.md` — how an automation / Grok Build session must work
-
-## Controls
-
-| Input | Action |
-| --- | --- |
-| Left stick / WASD / arrows | Move |
-| A button / Space / J | Attack |
-| II / Esc | Pause |
+1. `DESIGN.md`
+2. `ROADMAP.md`
+3. `CHANGELOG.md`
+4. `AGENTS.md`

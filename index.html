@@ -2,76 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#1b3a2a" />
-  <title>Sproutbound</title>
-  <link rel="stylesheet" href="css/style.css?v=0.2.2" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#14110e" />
+  <title>Ashward</title>
+  <link rel="stylesheet" href="css/style.css?v=0.3.0" />
 </head>
 <body>
-  <div id="app">
-    <header id="hud">
-      <div class="hud-block">
-        <div class="title">Sproutbound</div>
-        <div id="status" class="status">Pip the Sproutling</div>
-      </div>
-      <div class="meters">
-        <div class="meter">
-          <span>HP</span>
-          <div class="bar"><i id="hp-bar"></i></div>
-          <b id="hp-text">10/10</b>
-        </div>
-        <div class="meter">
-          <span>XP</span>
-          <div class="bar xp"><i id="xp-bar"></i></div>
-          <b id="xp-text">Lv 1</b>
-        </div>
-      </div>
-      <div class="pockets">
-        <span>Seeds <b id="coin-text">0</b></span>
-        <span>Loot <b id="loot-text">0</b></span>
-      </div>
-    </header>
-
-    <main id="stage">
-      <canvas id="game"></canvas>
-      <div id="toast"></div>
-      <div id="pause-menu" class="hidden">
-        <h2>Paused</h2>
-        <p id="pause-blurb">Bag and shrine trades. The stick and A button stay under the menu.</p>
-        <section class="panel">
-          <h3>Bag</h3>
-          <ul id="bag-list"></ul>
-        </section>
-        <section class="panel">
-          <h3>Shrine shop</h3>
-          <p id="shop-note" class="note"></p>
-          <button id="btn-buy-petal" type="button">Heart Petal</button>
-          <button id="btn-buy-swipe" type="button">Stronger swipe</button>
-        </section>
-        <button id="btn-resume" type="button">Resume</button>
-        <button id="btn-reset" type="button">New Adventure</button>
-      </div>
-    </main>
-
-    <footer id="controls">
-      <div id="pad" class="pad" aria-label="Move">
-        <button type="button" class="dir" data-dir="up" aria-label="Up">&#8593;</button>
-        <button type="button" class="dir" data-dir="left" aria-label="Left">&#8592;</button>
-        <button type="button" class="dir" data-dir="down" aria-label="Down">&#8595;</button>
-        <button type="button" class="dir" data-dir="right" aria-label="Right">&#8594;</button>
-      </div>
-      <div id="stick" class="stick">
-        <div id="knob" class="knob"></div>
-      </div>
-      <div class="buttons">
-        <button id="btn-pause" class="ghost">II</button>
-        <button id="btn-attack" class="attack">A</button>
-      </div>
-    </footer>
+  <h1>Ashward</h1>
+  <p class="sub" id="clock">Yard clock</p>
+  <section class="stocks" id="stocks"></section>
+  <h2>Colonists</h2>
+  <section class="people" id="people"></section>
+  <h2>City</h2>
+  <section class="map" id="map"></section>
+  <h2>Log</h2>
+  <ul id="log"></ul>
+  <div id="actions">
+    <button type="button" id="btn-shift">Work a shift</button>
+    <button type="button" id="btn-scout">Scout a street</button>
+    <button type="button" id="btn-gate">Patch the gate</button>
+    <button type="button" id="btn-new">New yard</button>
   </div>
-  <script src="js/data.js?v=0.2.2"></script>
-  <script src="js/game.js?v=0.2.2"></script>
+  <script src="js/data.js?v=0.3.0"></script>
+  <script src="js/game.js?v=0.3.0"></script>
 </body>
 </html>

@@ -3,25 +3,23 @@
 Work **one increment at a time**. Mark the active slice as `IN PROGRESS`. When it ships, move it to CHANGELOG and promote the next `NEXT` item.
 
 ## Done
-- v0.1.0 Playable meadow prototype (movement, combat, loot, XP, save, mobile controls)
-- v0.2.0 Inventory + shrine shop — pause item list; Sunseeds buy Heart Petals and a stronger swipe
+- v0.1.0 through v0.2.2 Retired sprout meadow prototype. Canvas controls failed on a phone and are not coming back.
+- v0.3.0 Ashward text colony: stocks, colonists, gate, hourly tick, offline catch-up, endless district names.
 
 ## IN PROGRESS
 - none
 
 ## NEXT (ordered)
-1. **Quests** — shrine keeper asks Pip to collect 8 Sunseeds / shoo 5 Pebblebugs; reward Sprout Cap visually on Pip.
-2. **Biomes** — north grove (darker trees, more Shadowseeds), south shore (sand + water pickups).
-3. **Better sprites** — replace circles with 16×16 pixel art sheets drawn in-code or as PNG.
-4. **Audio** — mute button, step blips, swipe, pickup chime, looping meadow theme.
-5. **Day/night tint** — enemies swap tables at dusk; more Puffmoths at night.
-6. **More enemy behaviors** — dash, hop, leave a slowing pollen cloud.
-7. **World props** — breakable berry bushes, hidden chests, signposts.
-8. **PWA install** — manifest + service worker so kids can “Add to Home Screen”.
-9. **Co-op ghost** — local second player with a second virtual stick (optional, later).
+1. **Jobs** — assign a colonist to garden, scrap, clinic, or watch. The hourly tick uses the assignment.
+2. **Buildings** — spend scrap to raise a clinic, a watch post, and a second garden bed.
+3. **Night raid** — once per colony day the horde tests the gate. Ammo and wall strength change the result.
+4. **Search parties** — send two colonists into a known district. They can return with scrap, meds, or a missing person.
+5. **Seasons and rot** — food spoils, winter cuts the garden, summer raises the horde.
+6. **Colonist stories** — short traits (quiet, stubborn, careful) that change one tick rule each.
+7. **Trade post** — a cleared district can swap scrap for ammo or meds. No real-money shop.
+8. **Multi-yard** — found a second camp on the map. Both catch up from the same timestamp.
 
 ## Backlog / maybe
-- Capacitor / Android wrapper
-- Godot port using the same DESIGN.md
-- Procedural points of interest (ruined wagon, bee circle, giant mushroom)
-- Parental lock for play-time reminder
+- Export the log as a text file
+- A quiet daily notification, still no account
+- Godot port of the same tick rules

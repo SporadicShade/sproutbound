@@ -1,38 +1,29 @@
-# Sproutbound design bible
+# Ashward design bible
 
 ## Audience
-Kids roughly 6–12, plus parents looking over a shoulder. Bright, readable, short sessions. No horror, no gore, no gambling, no chat, no real-money loot.
+Adults who want a slow colony log they can leave and come back to. Not a kids game. Not a canvas action game.
 
 ## Fantasy
-A living meadow that feels bigger than the first screen. Pip is small and brave. Enemies are pests and tricksters, not monsters. Winning looks like the world getting prettier, not darker.
+Ashward is a walled yard in a dead city. Colonists keep a gate, a garden, and a scrap pile while the streets fill with infected. Winning is lasting another week and pushing the map one district further. There is no last level.
 
 ## Pillars
-1. **Readable retro top-down.** 32px tiles, strong silhouettes, high contrast HUD.
-2. **One-thumb mobile.** Joystick left, attack right, never cover the hero.
-3. **Open meadow, not a hallway.** Always another grove, shrine, or sparkle in view.
-4. **Dynamic but fair.** Enemies change pathing and drop tables; kids never get one-shot from full health at level 1.
-5. **Grow in public.** Every increment is playable. Changelog is the source of truth.
+1. **Text first.** A phone shows a log, stocks, and buttons. No map canvas, no virtual stick.
+2. **The yard keeps working offline.** Time is stored. Opening the page catches the colony up.
+3. **Open city, not a hallway.** Scouting names a new district forever. The edge is never finished.
+4. **Pressure, not spectacle.** Horde strength is a number. Hits are reported as injuries and missing people, not described wounds.
+5. **One increment at a time.** Every push stays playable.
 
 ## Tone
-Warm, a little funny, never sarcastic at the player. Toasts like “Found Silkfluff!” not “Loot acquired.”
+Dry and practical. Log lines like "Ivo patched the east gate." Not horror prose.
 
-## Combat rules
-- Telegraphed, short-range swipe.
-- I-frames after a hit.
-- Defeat returns Pip to the home shrine with full HP. No game-over screen.
-- Enemy HP bars stay on. No jump-scare spawns on top of the player.
-
-## Content rules
-- Names stay invented and kid-safe (Pebblebug, Puffmoth, Shadowseed).
-- Loot is physical and cute: seeds, pebbles, petals, caps.
-- Music / SFX later: chiptune, no lyrics.
-- No blood. Hits flash white. Drops sparkle.
+## Survival rules
+- Food, scrap, meds, ammo, and power are the stocks.
+- Colonists have a job, hunger, and a condition: ready, tired, injured, missing.
+- Buildings change the hourly tick. The gate slows the horde. The watch spends ammo. The garden makes food.
+- A breach can injure or mark a colonist missing. A later search can bring them back. No permanent gore state.
+- There is no game-over screen. A fallen yard starts a relief camp in the same save and keeps the map.
 
 ## Technical constraints
-- Keep `js/data.js` as the catalog of tiles, enemies, items, XP curve.
-- Keep `js/game.js` as the loop. Split files only when a system is clearly isolated (quests, inventory UI, audio).
-- No bundler unless ROADMAP explicitly starts a port.
-- Preserve mobile touch controls in every UI change.
-
-## Success for a session
-A kid can wander, fight something, pick up a sparkle, and feel they found a secret in under two minutes.
+- Static HTML, CSS, and JS. No bundler.
+- `localStorage` key `ashward-save-v1` stores world, stocks, people, and `lastTick`.
+- Catch-up is capped per open so a phone does not freeze, and the log says if more time is still waiting.
