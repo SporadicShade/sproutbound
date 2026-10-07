@@ -6,6 +6,10 @@
   const pauseMenu = document.getElementById("pause-menu");
   const stick = document.getElementById("stick");
   const knob = document.getElementById("knob");
+  const bagList = document.getElementById("bag-list");
+  const shopNote = document.getElementById("shop-note");
+  const buyPetalBtn = document.getElementById("btn-buy-petal");
+  const buySwipeBtn = document.getElementById("btn-buy-swipe");
 
   const SAVE_KEY = "sproutbound-save-v1";
   const state = {
@@ -91,7 +95,7 @@
     state.player = {
       x: 10 * S.tile, y: (S.worldSize >> 1) * S.tile,
       r: 11, hp: 10, maxHp: 10, seeds: 0, loot: 0, xp: 0, level: 1,
-      facing: 1, invuln: 0, inventory: {}
+      facing: 1, invuln: 0, inventory: {}, swipe: 0
     };
   }
 
@@ -131,15 +135,13 @@
   function grantItem(id, amount = 1) {
     const item = S.items[id];
     if (!item) return;
-    if (item.kind === "currency") state.player.seeds += amount;
-    else if (item.kind === "heal") {
-      state.player.hp = Math.min(state.player.maxHp, state.player.hp + item.value);
-      toast(`Pip feels better (+${item.value} HP)`);
-    } else {
-      state.player.inventory[id] = (state.player.inventory[id] || 0) + amount;
-      state.player.loot += amount;
+    const p = state.player;
+    if (item.kind === "currency") p.seeds += amount;
+    else {
+      p.inventory[id] = (p.inventory[id] || 0) + amount;
+      if (item.kind !== "heal") p.loot += amount;
     }
-    toast(`Found ${item.name}!`);
+    toast(item.kind === "heal" ? `Found ${item.name}! Open pause to use it.` : `Found ${item.name}!`);
   }
 
   function levelFromXp(xp) {
@@ -160,18 +162,23 @@
     }
   }
 
+  function swipeBonus() {
+    return state.player.swipe || 0;
+  }
+
   function attack() {
     if (state.attackCooldown > 0 || state.paused) return;
     state.attackCooldown = 0.32;
     const p = state.player;
-    const reach = 34;
+    const bonus = swipeBonus();
+    const reach = 34 + bonus * 4;
     const ax = p.x + p.facing * 18;
     const ay = p.y;
-    state.particles.push({ x: ax, y: ay, life: 0.18, color: "#fff4b0" });
+    state.particles.push({ x: ax, y: ay, life: 0.18, color: bonus ? "#fff0a0" : "#fff4b0" });
     for (const e of state.entities) {
       const dx = e.x - ax, dy = e.y - ay;
       if (dx * dx + dy * dy < reach * reach) {
-        e.hp -= 2 + Math.floor(p.level / 2);
+        e.hp -= 2 + Math.floor(p.level / 2) + bonus;
         e.flash = 0.15;
         if (e.hp <= 0) {
           const spec = S.enemies[e.kind];
@@ -197,6 +204,131 @@
       p.x = 10 * S.tile;
       p.y = (S.worldSize >> 1) * S.tile;
       p.hp = p.maxHp;
+    }
+  }
+
+  function nearShrine() {
+    const p = state.player;
+    const tx = Math.floor(p.x / S.tile);
+    const ty = Math.floor(p.y / S.tile);
+    for (let y = ty - 1; y <= ty + 1; y++) {
+      for (let x = tx - 1; x <= tx + 1; x++) {
+        if (tileAt(x, y) === S.tiles.SHRINE) return true;
+      }
+    }
+    return false;
+  }
+
+  function useItem(id) {
+    const p = state.player;
+    const item = S.items[id];
+    const n = p.inventory[id] || 0;
+    if (!item || n <= 0) return;
+    if (item.kind === "heal") {
+      if (p.hp >= p.maxHp) {
+        toast("Pip is already full of pep!");
+        return;
+      }
+      p.inventory[id] = n - 1;
+      if (p.inventory[id] <= 0) delete p.inventory[id];
+      p.hp = Math.min(p.maxHp, p.hp + item.value);
+      toast(`${item.name} helps (+${item.value} HP)`);
+    } else {
+      toast(`${item.name} is a keepsafe.`);
+    }
+    renderPause();
+    save();
+  }
+
+  function buyPetal() {
+    const offer = S.shop.heartpetal;
+    if (!nearShrine()) {
+      toast("Stand by a shrine to trade.");
+      renderPause();
+      return;
+    }
+    const p = state.player;
+    if (p.seeds < offer.cost) {
+      toast(`Need ${offer.cost} Sunseeds for a Heart Petal.`);
+      return;
+    }
+    p.seeds -= offer.cost;
+    p.inventory.heartpetal = (p.inventory.heartpetal || 0) + 1;
+    toast("The shrine tucks a Heart Petal into the bag.");
+    renderPause();
+    save();
+  }
+
+  function buySwipe() {
+    const offer = S.shop.swipe;
+    const p = state.player;
+    const rank = p.swipe || 0;
+    if (!nearShrine()) {
+      toast("Stand by a shrine to trade.");
+      renderPause();
+      return;
+    }
+    if (rank >= offer.max) {
+      toast("The swipe is as bright as the shrine allows.");
+      return;
+    }
+    const cost = offer.costs[rank];
+    if (p.seeds < cost) {
+      toast(`Need ${cost} Sunseeds for a stronger swipe.`);
+      return;
+    }
+    p.seeds -= cost;
+    p.swipe = rank + 1;
+    toast(`Swipe shines brighter (${p.swipe}/${offer.max}).`);
+    renderPause();
+    save();
+  }
+
+  function renderPause() {
+    if (!state.player) return;
+    const p = state.player;
+    const ids = Object.keys(p.inventory).filter((id) => p.inventory[id] > 0 && S.items[id]);
+    bagList.replaceChildren();
+    if (!ids.length) {
+      const empty = document.createElement("li");
+      empty.textContent = "Nothing in the bag yet. Sparkles on the meadow fill it.";
+      bagList.appendChild(empty);
+    } else {
+      for (const id of ids) {
+        const item = S.items[id];
+        const li = document.createElement("li");
+        const swatch = document.createElement("i");
+        swatch.className = "swatch";
+        swatch.style.background = item.color;
+        const label = document.createElement("span");
+        label.textContent = `${item.name} × ${p.inventory[id]}`;
+        li.append(swatch, label);
+        if (item.kind === "heal") {
+          const use = document.createElement("button");
+          use.type = "button";
+          use.className = "bag-use";
+          use.textContent = "Use";
+          use.addEventListener("click", () => useItem(id));
+          li.appendChild(use);
+        }
+        bagList.appendChild(li);
+      }
+    }
+    const atShrine = nearShrine();
+    const petal = S.shop.heartpetal;
+    const swipe = S.shop.swipe;
+    const rank = p.swipe || 0;
+    shopNote.textContent = atShrine
+      ? `Shrine light is close. Sunseeds: ${p.seeds}.`
+      : "Walk onto a yellow shrine, then open pause to trade.";
+    buyPetalBtn.textContent = `Heart Petal — ${petal.cost} Sunseeds`;
+    buyPetalBtn.disabled = !atShrine || p.seeds < petal.cost;
+    if (rank >= swipe.max) {
+      buySwipeBtn.textContent = "Stronger swipe — max";
+      buySwipeBtn.disabled = true;
+    } else {
+      buySwipeBtn.textContent = `Stronger swipe ${rank + 1}/${swipe.max} — ${swipe.costs[rank]} Sunseeds`;
+      buySwipeBtn.disabled = !atShrine || p.seeds < swipe.costs[rank];
     }
   }
 
@@ -269,7 +401,7 @@
     document.getElementById("xp-text").textContent = `Lv ${p.level}`;
     document.getElementById("coin-text").textContent = p.seeds;
     document.getElementById("loot-text").textContent = p.loot;
-    document.getElementById("status").textContent = `Pip • ${Object.keys(p.inventory).length} unique finds`;
+    document.getElementById("status").textContent = `Pip • swipe ${swipeBonus()} • ${Object.keys(p.inventory).length} finds`;
   }
 
   function drawTile(tx, ty, screenX, screenY) {
@@ -354,7 +486,7 @@
       ctx.strokeStyle = "rgba(255,244,176,0.8)";
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.arc(p.x - cam.x + p.facing * 16, p.y - cam.y, 16, 0, Math.PI * 2);
+      ctx.arc(p.x - cam.x + p.facing * 16, p.y - cam.y, 16 + swipeBonus() * 3, 0, Math.PI * 2);
       ctx.stroke();
     }
     for (const pt of state.particles) {
@@ -390,6 +522,7 @@
   function setPaused(v) {
     state.paused = v;
     pauseMenu.classList.toggle("hidden", !v);
+    if (v) renderPause();
   }
 
   function save() {
@@ -405,7 +538,11 @@
       const raw = localStorage.getItem(SAVE_KEY);
       if (!raw) return false;
       const data = JSON.parse(raw);
-      if (data.player) state.player = data.player;
+      if (data.player) {
+        state.player = data.player;
+        state.player.inventory = state.player.inventory || {};
+        state.player.swipe = state.player.swipe || 0;
+      }
       if (data.entities) state.entities = data.entities;
       if (data.drops) state.drops = data.drops;
       return true;
@@ -457,6 +594,8 @@
   document.getElementById("btn-pause").addEventListener("click", () => setPaused(!state.paused));
   document.getElementById("btn-resume").addEventListener("click", () => setPaused(false));
   document.getElementById("btn-reset").addEventListener("click", newAdventure);
+  buyPetalBtn.addEventListener("click", buyPetal);
+  buySwipeBtn.addEventListener("click", buySwipe);
   window.addEventListener("beforeunload", save);
   setInterval(save, 8000);
 

@@ -39,9 +39,19 @@
       <div id="toast"></div>
       <div id="pause-menu" class="hidden">
         <h2>Paused</h2>
-        <p>Sproutbound is a cozy open meadow for kids. Explore, tap attack, pick up sparkles.</p>
-        <button id="btn-resume">Resume</button>
-        <button id="btn-reset">New Adventure</button>
+        <p id="pause-blurb">Bag and shrine trades. The stick and A button stay under the menu.</p>
+        <section class="panel">
+          <h3>Bag</h3>
+          <ul id="bag-list"></ul>
+        </section>
+        <section class="panel">
+          <h3>Shrine shop</h3>
+          <p id="shop-note" class="note"></p>
+          <button id="btn-buy-petal" type="button">Heart Petal</button>
+          <button id="btn-buy-swipe" type="button">Stronger swipe</button>
+        </section>
+        <button id="btn-resume" type="button">Resume</button>
+        <button id="btn-reset" type="button">New Adventure</button>
       </div>
     </main>
 

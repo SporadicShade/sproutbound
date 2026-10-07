@@ -2,6 +2,17 @@
 
 All notable changes to Sproutbound. Keep newest first. Automations must append here in the same format whenever they push code.
 
+## [0.2.0] — 2026-10-07
+
+### Added
+- Pause bag lists finds with counts. Heart Petals can be used from the bag for +3 HP.
+- Shrine shop, only while Pip stands by a yellow shrine: Heart Petal for 4 Sunseeds, stronger swipe in three ranks (6 / 10 / 16 Sunseeds).
+- Stronger swipe adds damage and a slightly wider swing. Rank shows on the HUD.
+
+### Changed
+- Heart Petals no longer heal the moment they are picked up. They go into the bag so the shop and Use button share one loop.
+- Pause panel scrolls on a phone and keeps the joystick and A button visible underneath.
+
 ## [0.1.0] — 2026-09-21
 
 ### Added

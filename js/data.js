@@ -1,6 +1,6 @@
 /* Sproutbound data catalog — keep tables here so gameplay code stays lean. */
 window.SPROUT = {
-  version: "0.1.0",
+  version: "0.2.0",
   worldSize: 56,
   tile: 32,
   tiles: {
@@ -59,6 +59,10 @@ window.SPROUT = {
     gloomkernel: { name: "Gloom Kernel", kind: "loot", value: 6, color: "#6b5b95" },
     heartpetal: { name: "Heart Petal", kind: "heal", value: 3, color: "#ff8a7a" },
     sproutcap: { name: "Sprout Cap", kind: "gear", value: 8, color: "#7dce6a" }
+  },
+  shop: {
+    heartpetal: { item: "heartpetal", cost: 4, label: "Heart Petal" },
+    swipe: { costs: [6, 10, 16], max: 3, label: "Stronger swipe" }
   },
   levels: [0, 12, 28, 50, 80, 120, 170, 230]
 };
