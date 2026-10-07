@@ -4,55 +4,73 @@
   --dim: #b7aa96;
   --line: #3c342c;
   --accent: #e0a15a;
-  --danger: #d4776a;
+  --up: #8fbf7a;
+  --down: #d4776a;
 }
 * { box-sizing: border-box; }
 html, body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: 17px/1.45 "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  font: 17px/1.45 "Iowan Old Style", Palatino, serif;
 }
-body { padding: 20px 18px 132px; max-width: 52rem; margin: 0 auto; }
+body { padding: 18px 16px 28px; max-width: 56rem; margin: 0 auto; }
 h1 { font-size: 1.7rem; margin: 0 0 4px; }
-.sub, .note { color: var(--dim); margin: 0 0 12px; }
+.sub, .note { color: var(--dim); margin: 0 0 10px; }
 .grid { display: grid; gap: 8px; margin: 10px 0 16px; }
-.stocks { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.stocks { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); }
 .card, .person, .district, .build {
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 10px 12px;
 }
 .card b, .person b { color: var(--accent); }
-.person { display: grid; gap: 8px; }
-.person select, button {
+.rate.up { color: var(--up); }
+.rate.down { color: var(--down); }
+.person { display: grid; gap: 6px; }
+select, button {
   font: inherit;
   border-radius: 10px;
   min-height: 44px;
 }
 select { background: #221c17; color: var(--ink); border: 1px solid var(--line); padding: 6px; }
+#city-map {
+  position: relative;
+  height: 240px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #1a1714;
+  overflow: hidden;
+}
+.plot {
+  position: absolute;
+  min-width: 72px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  background: #2a241c;
+  font-size: 12px;
+}
+.dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+}
+.dot span {
+  position: absolute;
+  left: 12px;
+  top: -6px;
+  white-space: nowrap;
+  font-size: 11px;
+}
 #log { list-style: none; padding: 0; margin: 8px 0 0; }
 #log li { padding: 7px 0; border-bottom: 1px solid var(--line); }
-#actions {
-  position: sticky;
-  bottom: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
-  background: linear-gradient(transparent, var(--bg) 16px);
-}
-button {
-  font-weight: 700;
-  background: var(--accent);
-  color: #1b140c;
-  border: 0;
-  padding: 8px 12px;
-}
+#actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+button { font-weight: 700; background: var(--accent); color: #1b140c; border: 0; padding: 8px 12px; }
 h2 { font-size: 1.05rem; margin: 18px 0 6px; }
-.warn { color: var(--danger); }
 @media (min-width: 800px) {
-  body { padding-bottom: 40px; }
   .layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 22px; }
-  #actions { position: static; }
+  #city-map { height: 320px; }
 }

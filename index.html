@@ -5,13 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#12100e" />
   <title>Ashward</title>
-  <link rel="stylesheet" href="css/style.css?v=0.4.0" />
+  <link rel="stylesheet" href="css/style.css?v=0.5.0" />
 </head>
 <body>
   <h1>Ashward</h1>
   <p class="sub" id="clock">Yard clock</p>
-  <p class="note">Adult colony log. Same page on a phone or a computer. Closing it does not stop the clock.</p>
+  <p class="note">Time moves on its own. Assign a main job. People leave that shift and do their own things.</p>
   <section class="grid stocks" id="stocks"></section>
+  <h2>City</h2>
+  <div id="city-map" aria-label="City map"></div>
   <div class="layout">
     <div>
       <h2>Colonists</h2>
@@ -20,20 +22,18 @@
       <section class="grid" id="builds"></section>
     </div>
     <div>
-      <h2>City</h2>
+      <h2>Known streets</h2>
       <section class="grid" id="map"></section>
       <h2>Log</h2>
       <ul id="log"></ul>
     </div>
   </div>
   <div id="actions">
-    <button type="button" id="btn-shift">Advance an hour</button>
-    <button type="button" id="btn-night">Face the night</button>
     <button type="button" id="btn-scout">Scout a street</button>
-    <button type="button" id="btn-search">Search for the missing</button>
+    <button type="button" id="btn-search">Ask after the missing</button>
     <button type="button" id="btn-new">Relief camp</button>
   </div>
-  <script src="js/data.js?v=0.4.0"></script>
-  <script src="js/game.js?v=0.4.0"></script>
+  <script src="js/data.js?v=0.5.0"></script>
+  <script src="js/game.js?v=0.5.0"></script>
 </body>
 </html>
