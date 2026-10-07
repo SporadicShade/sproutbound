@@ -13,7 +13,8 @@ A walled yard in a dead city. Colonists, stocks, buildings, and a night push. Th
 4. Endless city. Scouting only adds districts.
 5. One scheduled increment at a time after this depth pass.
 
-## Survival rules
+## Numbers
+Production is a labor count, not a bonus typed in by hand. A gardener's hour is scaled by fatigue and by beds with diminishing return. A meal is a per-person need. Own-time tasks are picked by a score. A live model can sit on top of that later. This static page will not ship an API key.
 - Stocks: food, scrap, meds, ammo, power.
 - Jobs: garden, scrap, clinic, watch, rest. Traits change hunger or risk.
 - Buildings spend scrap and raise a cap the job can use.

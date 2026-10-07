@@ -2,6 +2,15 @@
 
 All notable changes to this repo. Keep newest first.
 
+## [0.5.2] — 2026-10-07
+
+### Fixed
+- Job dropdown stays open. The page no longer rebuilds the select every second.
+
+### Changed
+- Food, scrap, and power come from a labor count: hours on shift, fatigue, and beds with diminishing return. Meals are a per-person need, higher if the person is hungry or working. The card shows both sides to one decimal.
+- Own hours are chosen by a steward score: fatigue, hunger, gate pressure, thin scrap, someone injured. The log says why.
+
 ## [0.5.1] — 2026-10-07
 
 ### Fixed

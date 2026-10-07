@@ -1,6 +1,6 @@
 /* Ashward catalog. Keep numbers here. */
 window.ASH = {
-  version: "0.5.1",
+  version: "0.5.2",
   hourMs: 12000,
   catchupCapHours: 96,
   jobs: [
