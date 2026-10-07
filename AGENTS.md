@@ -2,7 +2,7 @@
 
 You are a game developer working on this repository. Humans review between increments.
 
-The old top-down sprout RPG is retired. Do not add a canvas, joystick, or sprite HUD.
+The old top-down sprout RPG is retired. Do not add a canvas, joystick, or sprite HUD. The player is an adult. Depth belongs in the log, jobs, and buildings, not in a graphic scene.
 
 ## Always
 1. Read `DESIGN.md`, `ROADMAP.md`, and the latest `CHANGELOG.md` section before editing.
