@@ -301,7 +301,7 @@
         swatch.className = "swatch";
         swatch.style.background = item.color;
         const label = document.createElement("span");
-        label.textContent = `${item.name} × ${p.inventory[id]}`;
+        label.textContent = `${item.name} \u00d7 ${p.inventory[id]}`;
         li.append(swatch, label);
         if (item.kind === "heal") {
           const use = document.createElement("button");
@@ -321,13 +321,13 @@
     shopNote.textContent = atShrine
       ? `Shrine light is close. Sunseeds: ${p.seeds}.`
       : "Walk onto a yellow shrine, then open pause to trade.";
-    buyPetalBtn.textContent = `Heart Petal — ${petal.cost} Sunseeds`;
+    buyPetalBtn.textContent = `Heart Petal \u2014 ${petal.cost} Sunseeds`;
     buyPetalBtn.disabled = !atShrine || p.seeds < petal.cost;
     if (rank >= swipe.max) {
-      buySwipeBtn.textContent = "Stronger swipe — max";
+      buySwipeBtn.textContent = "Stronger swipe \u2014 max";
       buySwipeBtn.disabled = true;
     } else {
-      buySwipeBtn.textContent = `Stronger swipe ${rank + 1}/${swipe.max} — ${swipe.costs[rank]} Sunseeds`;
+      buySwipeBtn.textContent = `Stronger swipe ${rank + 1}/${swipe.max} \u2014 ${swipe.costs[rank]} Sunseeds`;
       buySwipeBtn.disabled = !atShrine || p.seeds < swipe.costs[rank];
     }
   }
@@ -352,9 +352,11 @@
     const speed = 110;
     const nx = p.x + (mx / mag) * speed * dt;
     const ny = p.y + (my / mag) * speed * dt;
-    if (!blocked(nx, p.y)) p.x = nx;
-    if (!blocked(p.x, ny)) p.y = ny;
-    if (mx !== 0) p.facing = Math.sign(mx);
+    if (Math.abs(mx) > 0.08 || Math.abs(my) > 0.08) {
+      if (!blocked(nx, p.y)) p.x = nx;
+      if (!blocked(p.x, ny)) p.y = ny;
+      if (mx !== 0) p.facing = Math.sign(mx);
+    }
     if (state.keys.has(" ") || state.keys.has("j")) attack();
 
     for (const e of state.entities) {
@@ -401,7 +403,7 @@
     document.getElementById("xp-text").textContent = `Lv ${p.level}`;
     document.getElementById("coin-text").textContent = p.seeds;
     document.getElementById("loot-text").textContent = p.loot;
-    document.getElementById("status").textContent = `Pip • swipe ${swipeBonus()} • ${Object.keys(p.inventory).length} finds`;
+    document.getElementById("status").textContent = `Pip \u2022 swipe ${swipeBonus()} \u2022 ${Object.keys(p.inventory).length} finds`;
   }
 
   function drawTile(tx, ty, screenX, screenY) {
@@ -522,7 +524,11 @@
   function setPaused(v) {
     state.paused = v;
     pauseMenu.classList.toggle("hidden", !v);
-    if (v) renderPause();
+    if (v) {
+      state.stick.x = 0;
+      state.stick.y = 0;
+      renderPause();
+    }
   }
 
   function save() {
@@ -561,27 +567,54 @@
   }
 
   function bindStick() {
+    let activeId = null;
     const setFromEvent = (clientX, clientY) => {
       const rect = stick.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
-      let dx = clientX - cx, dy = clientY - cy;
-      const max = rect.width / 2 - 10;
-      const mag = Math.hypot(dx, dy);
-      if (mag > max) { dx = (dx / mag) * max; dy = (dy / mag) * max; }
-      knob.style.left = `${dx + 33}px`;
-      knob.style.top = `${dy + 33}px`;
+      let dx = clientX - cx;
+      let dy = clientY - cy;
+      const max = Math.max(28, rect.width / 2 - 8);
+      const mag = Math.hypot(dx, dy) || 1;
+      if (mag > max) {
+        dx = (dx / mag) * max;
+        dy = (dy / mag) * max;
+      }
+      const knobSize = knob.offsetWidth || 52;
+      knob.style.left = `${rect.width / 2 - knobSize / 2 + dx}px`;
+      knob.style.top = `${rect.height / 2 - knobSize / 2 + dy}px`;
       state.stick.x = dx / max;
       state.stick.y = dy / max;
     };
     const clear = () => {
-      state.stick.x = 0; state.stick.y = 0;
-      knob.style.left = "33px"; knob.style.top = "33px";
+      activeId = null;
+      state.stick.x = 0;
+      state.stick.y = 0;
+      const knobSize = knob.offsetWidth || 52;
+      knob.style.left = `${stick.clientWidth / 2 - knobSize / 2}px`;
+      knob.style.top = `${stick.clientHeight / 2 - knobSize / 2}px`;
     };
-    stick.addEventListener("pointerdown", (e) => { stick.setPointerCapture(e.pointerId); setFromEvent(e.clientX, e.clientY); });
-    stick.addEventListener("pointermove", (e) => { if (e.buttons || e.pressure) setFromEvent(e.clientX, e.clientY); });
-    stick.addEventListener("pointerup", clear);
-    stick.addEventListener("pointercancel", clear);
+    const onDown = (e) => {
+      if (activeId !== null) return;
+      activeId = e.pointerId;
+      if (e.cancelable) e.preventDefault();
+      try { stick.setPointerCapture(e.pointerId); } catch (err) {}
+      setFromEvent(e.clientX, e.clientY);
+    };
+    const onMove = (e) => {
+      if (activeId === null || e.pointerId !== activeId) return;
+      if (e.cancelable) e.preventDefault();
+      setFromEvent(e.clientX, e.clientY);
+    };
+    const onUp = (e) => {
+      if (activeId === null || e.pointerId !== activeId) return;
+      try { stick.releasePointerCapture(e.pointerId); } catch (err) {}
+      clear();
+    };
+    stick.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
   }
 
   window.addEventListener("resize", resize);
@@ -590,7 +623,10 @@
     if (e.key === "Escape") setPaused(!state.paused);
   });
   window.addEventListener("keyup", (e) => state.keys.delete(e.key.toLowerCase()));
-  document.getElementById("btn-attack").addEventListener("click", attack);
+  document.getElementById("btn-attack").addEventListener("pointerdown", (e) => {
+    if (e.cancelable) e.preventDefault();
+    attack();
+  });
   document.getElementById("btn-pause").addEventListener("click", () => setPaused(!state.paused));
   document.getElementById("btn-resume").addEventListener("click", () => setPaused(false));
   document.getElementById("btn-reset").addEventListener("click", newAdventure);
@@ -605,6 +641,6 @@
   spawnEnemies(77);
   load();
   bindStick();
-  toast("Welcome to the meadow. Move, then tap A.");
+  toast("Hold the green stick, then drag. Tap A to swat.");
   requestAnimationFrame(loop);
 })();
