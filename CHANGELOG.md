@@ -2,6 +2,13 @@
 
 All notable changes to Sproutbound. Keep newest first. Automations must append here in the same format whenever they push code.
 
+## [0.2.1] — 2026-10-07
+
+### Fixed
+- On-screen joystick now follows a finger drag. The old handler ignored moves unless the browser reported a mouse button, so phone drags never set a direction.
+- Stick drag is tracked on the window after the first touch, so lifting outside the circle still releases cleanly.
+- A button uses pointerdown, so it can fire while the other thumb is holding the stick.
+
 ## [0.2.0] — 2026-10-07
 
 ### Added

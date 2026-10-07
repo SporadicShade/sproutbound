@@ -39,7 +39,7 @@ html, body {
 .bar.xp i { background: linear-gradient(90deg, #6ab0ff, #d6f3ff); }
 .pockets { font-size: 13px; display: grid; gap: 4px; text-align: right; }
 #stage { position: relative; background: #163224; }
-#game { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+#game { width: 100%; height: 100%; display: block; image-rendering: pixelated; touch-action: none; }
 #toast {
   position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
   background: rgba(20, 48, 31, 0.92); color: var(--sun);
@@ -58,6 +58,7 @@ html, body {
   overflow: auto;
   z-index: 2;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 #pause-menu.hidden { display: none; }
 #pause-menu h2 { margin: 0 0 4px; font-size: 22px; }
@@ -102,22 +103,26 @@ html, body {
   align-items: center;
   padding: 8px 18px calc(14px + env(safe-area-inset-bottom));
   background: #14281d;
+  touch-action: none;
 }
 .stick {
   width: 118px; height: 118px; border-radius: 50%;
   background: rgba(255,255,255,0.08);
   border: 3px solid rgba(255,255,255,0.16);
   position: relative;
+  touch-action: none;
 }
 .knob {
   width: 52px; height: 52px; border-radius: 50%;
   background: var(--leaf);
   position: absolute; left: 33px; top: 33px;
+  pointer-events: none;
 }
-.buttons { display: flex; align-items: center; gap: 10px; }
+.buttons { display: flex; align-items: center; gap: 10px; touch-action: none; }
 .attack {
   width: 84px; height: 84px; border-radius: 50%;
   background: var(--rose); color: #3b1010; font-size: 28px;
+  touch-action: none;
 }
 .ghost {
   width: 44px; height: 44px; border-radius: 12px;
