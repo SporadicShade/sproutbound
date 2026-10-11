@@ -82,13 +82,25 @@
     };
   }
 
+  function markedStreets() {
+    return state.districts.filter((d) => d.name !== "Ashward Yard");
+  }
+
+  function pickStreet() {
+    const list = markedStreets();
+    if (!list.length) return null;
+    return list[Math.floor(Math.random() * list.length)].name;
+  }
+
   function steward(p) {
+    const streets = markedStreets().length;
     const scores = [
       { task: "resting", score: p.fatigue * 2 + (p.cond === "tired" ? 3 : 0), why: "fatigue is high" },
       { task: "looking for a meal", score: p.hunger * 1.4, why: "hunger is ahead of the pot" },
       { task: "checking the gate", score: Math.max(0, state.threat - state.gate), why: "the gate is the weaker number" },
       { task: "picking up odd jobs", score: state.stocks.scrap < 8 ? 2 : 0.4, why: "scrap is thin" },
-      { task: "sitting with the injured", score: state.people.some((q) => q.cond === "injured") ? 2.5 : 0, why: "someone is down" }
+      { task: "sitting with the injured", score: state.people.some((q) => q.cond === "injured") ? 2.5 : 0, why: "someone is down" },
+      { task: "scavenging a street", score: streets ? (state.stocks.scrap < 10 ? 2.2 : 1.3) : 0, why: "a marked street is open" }
     ];
     scores.sort((a, b) => b.score - a.score);
     return scores[0];
@@ -102,7 +114,16 @@
     if (p.doing === "on shift" && p.job === "watch") return "Gate";
     if (p.doing === "on shift" && p.job === "clinic") return "Clinic";
     if (p.doing === "checking the gate") return "Gate";
+    if (p.doing === "scavenging a street" && p.street) return p.street;
     return "Ashward Yard";
+  }
+
+  function tryLoot(p, quiet) {
+    if (p.doing !== "scavenging a street" || !p.street || !A.loot || !A.loot.length) return;
+    if (Math.random() > 0.4) return;
+    const find = A.loot[Math.floor(Math.random() * A.loot.length)];
+    state.stocks[find.stock] = (state.stocks[find.stock] || 0) + find.n;
+    if (!quiet) log(`${p.name} brings back a ${find.name} from ${p.street}.`);
   }
 
   function tickHour(quiet) {
@@ -114,13 +135,20 @@
       if (p.cond === "injured") { p.doing = "lying up"; return; }
       if (shift && p.job !== "unassigned") {
         p.doing = "on shift";
+        p.street = null;
         p.fatigue = Math.min(8, p.fatigue + 0.4);
       } else {
         const choice = steward(p);
         if (p.doing !== choice.task && !quiet) log(`${p.name} ${choice.task}: ${choice.why}.`);
         p.doing = choice.task;
+        if (choice.task === "scavenging a street") {
+          if (!p.street) p.street = pickStreet();
+        } else {
+          p.street = null;
+        }
         p.fatigue = Math.max(0, p.fatigue - (choice.task === "resting" ? 1 : 0.3));
         if (p.cond === "tired" && p.fatigue < 2) p.cond = "ready";
+        tryLoot(p, quiet);
       }
     });
     const r = rates();
@@ -226,7 +254,8 @@
         card.append(title, sel);
         peopleEl.appendChild(card);
       }
-      card.querySelector(".who").textContent = `${p.name} · ${p.trait} · ${p.cond} · ${p.doing}`;
+      const where = p.doing === "scavenging a street" && p.street ? ` on ${p.street}` : "";
+      card.querySelector(".who").textContent = `${p.name} · ${p.trait} · ${p.cond} · ${p.doing}${where}`;
       const sel = card.querySelector("select");
       if (open !== String(i)) sel.value = p.job;
     });
@@ -286,7 +315,7 @@
       Object.assign(state, blank(), data);
       state.stocks = Object.assign(blank().stocks, data.stocks || {});
       state.buildings = Object.assign(blank().buildings, data.buildings || {});
-      state.people = (data.people || blank().people).map((p, i) => Object.assign(blank().people[i] || {}, p, { fatigue: p.fatigue || 0 }));
+      state.people = (data.people || blank().people).map((p, i) => Object.assign(blank().people[i] || {}, p, { fatigue: p.fatigue || 0, street: p.street || null }));
       state.districts = data.districts && data.districts.length ? data.districts : blank().districts;
     } catch { /* fresh */ }
   }

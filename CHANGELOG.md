@@ -2,6 +2,11 @@
 
 All notable changes to this repo. Keep newest first.
 
+## [0.6.0] — 2026-10-11
+
+### Added
+- A scavenger on their own hours can bring back a named find from a marked street.
+
 ## [0.5.2] — 2026-10-07
 
 ### Fixed

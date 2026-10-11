@@ -1,6 +1,6 @@
 /* Ashward catalog. Keep numbers here. */
 window.ASH = {
-  version: "0.5.2",
+  version: "0.6.0",
   hourMs: 12000,
   catchupCapHours: 96,
   jobs: [
@@ -18,5 +18,13 @@ window.ASH = {
     { id: "wall", name: "Gate timber", cost: 6, max: 8, effect: "Raises gate strength by 1." }
   ],
   districts: ["Cinder Market", "Rail Cut", "Glass Orchard", "Pump Row", "South Silos", "Red Clinic", "Wire Yard", "Old School"],
-  streets: ["Lane", "Cut", "Row", "Court", "Span", "Well"]
+  streets: ["Lane", "Cut", "Row", "Court", "Span", "Well"],
+  loot: [
+    { name: "sealed tin", stock: "food", n: 2 },
+    { name: "coil of wire", stock: "scrap", n: 3 },
+    { name: "clinic packet", stock: "meds", n: 1 },
+    { name: "half box of rounds", stock: "ammo", n: 1 },
+    { name: "dry battery", stock: "power", n: 2 },
+    { name: "can of fuel", stock: "power", n: 1 }
+  ]
 };
