@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ashward Launcher</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #12100e; color: #f4ecdf; margin: 0; padding: 20px; max-width: 40rem; margin-inline: auto; }
+    h1 { color: #e0a15a; }
+    button { font-size: 1.1rem; padding: 14px 18px; margin: 6px 4px; background: #e0a15a; color: #1b140c; border: 0; border-radius: 10px; cursor: pointer; }
+    button:disabled { opacity: 0.5; }
+    #list { margin-top: 16px; }
+    .ver { border: 1px solid #3c342c; border-radius: 10px; padding: 12px; margin: 8px 0; }
+    .note { color: #b7aa96; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Ashward Launcher</h1>
+  <p>Pick a version to play. Newer versions appear at the top. Older ones stay here forever.</p>
+  <p class="note">Just double-click this file. No commands needed. Your colony save stays in this browser.</p>
+  <button id="refresh">Refresh list</button>
+  <div id="list">Loading versions…</div>
+
+  <script>
+    const OWNER = 'SporadicShade';
+    const REPO = 'sproutbound';
+
+    async function loadVersions() {
+      const list = document.getElementById('list');
+      list.innerHTML = 'Loading versions…';
+      try {
+        const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/releases`);
+        if (!res.ok) throw new Error('Could not reach GitHub');
+        const releases = await res.json();
+        if (!releases.length) {
+          list.innerHTML = '<p>No versions released yet. Check back after the next update.</p>';
+          return;
+        }
+        list.innerHTML = '';
+        releases.forEach((r) => {
+          const div = document.createElement('div');
+          div.className = 'ver';
+          const date = r.published_at ? new Date(r.published_at).toLocaleDateString() : '';
+          div.innerHTML = `<strong>${r.tag_name}</strong> <span class="note">${date}</span><br>
+            <button data-tag="${r.tag_name}">Play this version</button>`;
+          list.appendChild(div);
+        });
+        list.querySelectorAll('button[data-tag]').forEach((btn) => {
+          btn.addEventListener('click', () => play(btn.dataset.tag));
+        });
+      } catch (e) {
+        list.innerHTML = `<p>Could not load versions. Check your internet connection.<br><small>${e.message}</small></p>`;
+      }
+    }
+
+    async function play(tag) {
+      const btn = event.target;
+      btn.disabled = true;
+      btn.textContent = 'Loading…';
+      try {
+        const base = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${tag}`;
+        const [html, css, data, game] = await Promise.all([
+          fetch(`${base}/index.html`).then(r => r.text()),
+          fetch(`${base}/css/style.css`).then(r => r.text()),
+          fetch(`${base}/js/data.js`).then(r => r.text()),
+          fetch(`${base}/js/game.js`).then(r => r.text()),
+        ]);
+
+        // Make a self-contained page
+        let page = html
+          .replace(/<link[^>]+style\.css[^>]*>/i, `<style>${css}</style>`)
+          .replace(/<script[^>]+data\.js[^>]*><\/script>/i, `<script>${data}<\/script>`)
+          .replace(/<script[^>]+game\.js[^>]*><\/script>/i, `<script>${game}<\/script>`);
+
+        const blob = new Blob([page], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        btn.textContent = 'Opened!';
+        setTimeout(() => { btn.disabled = false; btn.textContent = 'Play this version'; }, 2000);
+      } catch (e) {
+        alert('Could not load that version. It may be missing files. Try another.\n' + e.message);
+        btn.disabled = false;
+        btn.textContent = 'Play this version';
+      }
+    }
+
+    document.getElementById('refresh').addEventListener('click', loadVersions);
+    loadVersions();
+  </script>
+</body>
+</html>

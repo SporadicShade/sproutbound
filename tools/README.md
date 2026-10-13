@@ -1,43 +1,26 @@
-# Ashward tools
+# Ashward tools — the easy way
 
-These run on your local machine. They do not use AI tokens unless you explicitly opt in.
+You do not need to know anything about computers or games.
 
-## Launcher (Minecraft-style)
+## To pick a version and play
 
-```bash
-cd tools/launcher
-node launcher.js              # list releases and what is installed
-node launcher.js play         # download latest (if needed) and open in browser
-node launcher.js play v0.6.0  # play a specific older version
-node launcher.js update       # just download the latest
-```
+1. Download the whole Ashward folder (or just this tools folder) from GitHub.
+2. Open the folder.
+3. Double-click **AshwardLauncher.html**.
+4. Click the version you want. It opens in a new tab.
+5. Older versions stay in the list forever.
 
-Versions are stored in `~/.ashward/versions/`. Old versions stay forever. The launcher starts a tiny local server and opens your browser. Your colony save lives in the browser’s localStorage and is independent of which version folder you launched.
+Your colony save stays in the browser. Closing the tab does not lose it.
 
-Requires Node 18+ and the `unzip` or `tar` command.
+## To run the balance tester and get a story summary
 
-## Headless balance tester
+1. Double-click **AshwardTester.html**.
+2. (Optional) Type a number of hours, or leave it blank to run until you stop it.
+3. Click **Start Tester**.
+4. Watch the log. When you have seen enough, click **Halt**.
+5. Click **Show Numbers** for the plain counts.
+6. Click **Get Story Summary**. The first time it will ask for your Grok API key (paste it once; it stays only on this computer). Then it writes a short plain-language summary.
 
-```bash
-cd tools/sim-tester
-node tester.js                 # run until you stop it
-node tester.js --hours 1000    # stop after 1000 simulated hours
-node tester.js --quiet         # less log spam
+No command windows. No scripts. Just double-click and buttons.
 
-# From another terminal, to halt:
-touch HALT
-# or just Ctrl+C in the tester terminal
-```
-
-The tester is pure Node. It mirrors the current game’s tick, rates, night check, and scavenger loot. It prints every event by default and ends with a numeric summary.
-
-Optional narrative summary (uses tokens only if you set a key):
-
-```bash
-export GROK_API_KEY=your-key   # or XAI_API_KEY
-node tester.js --hours 500
-```
-
-If no key is set, it skips the LLM call and prints only numbers.
-
-Keep `tester.js` in sync with `js/game.js` when the simulation changes.
+The tester uses no AI tokens while it is running. Tokens are used only if you click Get Story Summary and have entered a key.

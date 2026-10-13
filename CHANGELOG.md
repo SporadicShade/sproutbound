@@ -2,6 +2,12 @@
 
 All notable changes to this repo. Keep newest first.
 
+## [0.6.2] — 2026-10-13
+
+### Added
+- Double-click HTML launcher (`tools/AshwardLauncher.html`) so anyone can pick and play any version with no commands.
+- Double-click HTML tester (`tools/AshwardTester.html`) that runs the colony in the background, shows a live log, and can give a plain-language summary. No command windows.
+
 ## [0.6.1] — 2026-10-13
 
 ### Added

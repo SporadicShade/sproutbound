@@ -6,19 +6,15 @@ Keep a yard, assign jobs, raise buildings, and face the night. The city has no e
 
 Repo: https://github.com/SporadicShade/sproutbound
 
-## Current build
+## How to play a version (easy)
 
-See `CHANGELOG.md` for the latest version. Releases are created automatically when the changelog gains a new version heading.
+Download the repo, open the `tools` folder, and double-click **AshwardLauncher.html**. Pick any version. No commands needed.
 
-## Local launcher (Minecraft-style)
+## How to test balance (easy)
 
-```bash
-cd tools/launcher
-node launcher.js play          # latest
-node launcher.js play v0.6.0   # older version
-```
+Double-click **AshwardTester.html** in the `tools` folder. Click Start, then Halt when you want. Click Get Story Summary for a plain-language report.
 
-See `tools/README.md` for the headless balance tester (no AI tokens for the loop).
+See `tools/README.md` for the short steps.
 
 ## Docs
 
