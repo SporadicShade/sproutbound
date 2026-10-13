@@ -2,6 +2,13 @@
 
 All notable changes to this repo. Keep newest first.
 
+## [0.6.1] — 2026-10-13
+
+### Added
+- GitHub Action that creates a Release automatically when CHANGELOG.md gains a new version heading.
+- Local Minecraft-style launcher (`tools/launcher`) that downloads and keeps any release.
+- Headless balance tester (`tools/sim-tester`) that runs pure Node with no AI tokens unless you opt in for a narrative summary.
+
 ## [0.6.0] — 2026-10-11
 
 ### Added

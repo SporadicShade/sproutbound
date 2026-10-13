@@ -6,14 +6,19 @@ Keep a yard, assign jobs, raise buildings, and face the night. The city has no e
 
 Repo: https://github.com/SporadicShade/sproutbound
 
-## Current build (v0.4.0)
+## Current build
 
-- Food, scrap, meds, ammo, power
-- Job assignment and traits
-- Garden, clinic, watch, gate timber
-- Night push and a search for the missing
-- Offline catch-up from a saved timestamp
-- Scout adds another named district forever
+See `CHANGELOG.md` for the latest version. Releases are created automatically when the changelog gains a new version heading.
+
+## Local launcher (Minecraft-style)
+
+```bash
+cd tools/launcher
+node launcher.js play          # latest
+node launcher.js play v0.6.0   # older version
+```
+
+See `tools/README.md` for the headless balance tester (no AI tokens for the loop).
 
 ## Docs
 

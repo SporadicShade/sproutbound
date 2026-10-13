@@ -19,6 +19,7 @@ The old top-down sprout RPG is retired. Do not add a canvas, joystick, or sprite
 - Repo: `SporadicShade/sproutbound`, default branch `main`.
 - Write with push_files or create_or_update_file. Never force-push main.
 - Do not delete DESIGN.md.
+- After you push a version bump that updates the top heading in `CHANGELOG.md`, the GitHub Action `.github/workflows/release.yml` automatically creates a git tag and a GitHub Release if that version does not already exist. You do not need to create the tag or release yourself. The Release gives a permanent source zip for the launcher.
 
 ## Testing checklist
 - Open on a phone-width screen. Buttons wrap. Nothing is clipped off the side.
